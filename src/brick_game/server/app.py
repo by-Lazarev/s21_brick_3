@@ -4,13 +4,13 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from brick_game.race.game_logic import RacingGame, Direction
 from brick_game.race.fsm import State
-from brick_game.console_interface_v1.logic import GameV1 
-from brick_game.descktop_interface_v2.logic import GameV2  
+from brick_game.console_interface_v1.logic import GameV1  # Импортируем игру v1.0
+from brick_game.desktop_interface_v2.logic import GameV2  # Импортируем игру v2.0
 
 app = FastAPI()
 game = RacingGame()
-game_v1 = GameV1()
-game_v2 = GameV2() 
+game_v1 = GameV1()  # Инициализируем игру v1.0
+game_v2 = GameV2()  # Инициализируем игру v2.0
 
 class MoveRequest(BaseModel):
     direction: Direction
@@ -44,7 +44,9 @@ async def get_status():
         "car_position": game.car_position,
         "opponent_cars": game.opponent_cars,
         "state": game.state.state.name,
-        "score": game.score
+        "score": game.score,
+        "max_score": game.max_score,  # Добавляем максимальный результат
+        "level": game.level  # Добавляем текущий уровень
     }
 
 @app.post("/game/reset")
