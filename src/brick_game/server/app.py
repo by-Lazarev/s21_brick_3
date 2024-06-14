@@ -4,10 +4,13 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from brick_game.race.game_logic import RacingGame, Direction
 from brick_game.race.fsm import State
-from pathlib import Path
+from brick_game.console_interface_v1.logic import GameV1 
+from brick_game.descktop_interface_v2.logic import GameV2  
 
 app = FastAPI()
 game = RacingGame()
+game_v1 = GameV1()
+game_v2 = GameV2() 
 
 class MoveRequest(BaseModel):
     direction: Direction
@@ -17,7 +20,6 @@ app.mount("/static", StaticFiles(directory="brick_game/web_gui"), name="static")
 
 @app.get("/")
 async def read_index():
-    # Возвращаем index.html как HTML файл
     return FileResponse("brick_game/web_gui/index.html")
 
 @app.get("/health")
@@ -49,3 +51,16 @@ async def get_status():
 async def reset_game():
     game.reset()
     return {"message": "Game reset"}
+
+# Добавляем маршруты для игры v1.0
+@app.post("/game_v1/start")
+async def start_game_v1():
+    game_v1.start()
+    return {"message": "Game V1 started"}
+
+# Добавляем маршруты для игры v2.0
+@app.post("/game_v2/start")
+async def start_game_v2():
+    game_v2.start()
+    return {"message": "Game V2 started"}
+
